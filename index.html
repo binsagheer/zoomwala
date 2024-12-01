@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SVG Popup Interaction with Zoom-Out</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    .svg-container {
+      width: 100%;
+      height: auto;
+      position: relative;
+      background: #f0f0f0;
+    }
+
+    .red-point {
+      cursor: pointer;
+    }
+
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 20px;
+      border: 1px solid #ddd;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+      display: none; /* Hidden by default */
+    }
+
+    .popup.active {
+      display: block; /* Show popup when active */
+    }
+
+    .popup-content img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .popup-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      cursor: pointer;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="svg-container">
+  <svg id="map" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+    <!-- Example SVG content -->
+    <circle class="red-point" cx="200" cy="150" r="10" fill="red" data-popup="point1" />
+    <circle class="red-point" cx="400" cy="300" r="10" fill="red" data-popup="point2" />
+  </svg>
+</div>
+
+<!-- Popup -->
+<div id="popup" class="popup">
+  <div class="popup-content">
+    <span id="popup-close" class="popup-close">&times;</span>
+    <h2 id="popup-title"></h2>
+    <p id="popup-text"></p>
+    <img id="popup-image" src="" alt="Popup Image">
+  </div>
+</div>
+
+<script>
+  // Function to reset zoom level on mobile devices
+  function resetZoom() {
+    const metaViewport = document.querySelector("meta[name=viewport]");
+    if (metaViewport) {
+      metaViewport.setAttribute("content", "width=device-width, initial-scale=1.0");
+    }
+  }
+
+  // Add click event listeners to red points
+  document.querySelectorAll('.red-point').forEach(point => {
+    point.addEventListener('click', function () {
+      // Reset zoom level
+      resetZoom();
+
+      // Show popup
+      const popup = document.getElementById('popup');
+      const popupTitle = document.getElementById('popup-title');
+      const popupText = document.getElementById('popup-text');
+      const popupImage = document.getElementById('popup-image');
+
+      // Dynamic content (example, replace with your logic)
+      const pointId = this.getAttribute('data-popup');
+      if (pointId === "point1") {
+        popupTitle.textContent = "Point 1 Details";
+        popupText.textContent = "Description for Point 1.";
+        popupImage.src = "https://via.placeholder.com/300x200?text=Point+1+Image";
+      } else if (pointId === "point2") {
+        popupTitle.textContent = "Point 2 Details";
+        popupText.textContent = "Description for Point 2.";
+        popupImage.src = "https://via.placeholder.com/300x200?text=Point+2+Image";
+      }
+
+      popup.classList.add('active');
+    });
+  });
+
+  // Close popup
+  document.getElementById('popup-close').addEventListener('click', function () {
+    const popup = document.getElementById('popup');
+    popup.classList.remove('active');
+  });
+</script>
+
+<!-- Add the viewport meta tag dynamically -->
+<script>
+  const metaViewport = document.createElement('meta');
+  metaViewport.name = "viewport";
+  metaViewport.content = "width=device-width, initial-scale=1.0, user-scalable=yes";
+  document.head.appendChild(metaViewport);
+</script>
+
+</body>
+</html>
